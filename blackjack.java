@@ -1,1 +1,0 @@
-/* creates blackjack object for the interface to use  */
