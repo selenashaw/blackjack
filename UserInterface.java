@@ -70,30 +70,30 @@ public class UserInterface {
     return str;
   }
 
-  private static String formatCards (String c1, String c2) {
-    StringBuilder output = new StringBuilder();
+  private static String[] formatCards (String c1, String c2) {
+    String[] output = new String[3];
 
     if (c1 == "10" && c2 == "10") {
-      output.append("  ____        ____ \n");
-      output.append(" | " + c1 + " |      | " + c2 + " | \n");
-      output.append(" |____|      |____| \n");
+      output[0] = ("  ____\t ____ \n");
+      output[1] = (" | " + c1 + " |\t| " + c2 + " | \n");
+      output[2] = (" |____|\t|____| \n");
     }
     else if(c1 == "10") {
-      output.append("  ____        ___ \n");
-      output.append(" | " + c1 + " |      | " + c2 + " | \n");
-      output.append(" |____|      |___| \n");
+      output[0] = ("  ____\t ___ \n");
+      output[1] = (" | " + c1 + " |\t| " + c2 + " | \n");
+      output[2] = (" |____|\t|___| \n");
     }
     else if (c2 == "10"){
-      output.append("  ___        ____ \n");
-      output.append(" | " + c1 + " |      | " + c2 + " | \n");
-      output.append(" |___|      |____| \n");
+      output[0] = ("  ___\t ____ \n");
+      output[1] = (" | " + c1 + " |\t| " + c2 + " | \n");
+      output[2] = (" |___|\t|____| \n");
     }
     else {
-    output.append("  ___        ___ \n");
-    output.append(" | " + c1 + " |      | " + c2 + " | \n");
-    output.append(" |___|      |___| \n");
+      output[0] = ("  ___\t ___ \n");
+      output[1] = (" | " + c1 + " |\t| " + c2 + " | \n");
+      output[2] = (" |___|\t|___| \n");
     }
-    return output.toString();
+    return output;
   }
 
   private static String format(int card) {
@@ -112,9 +112,37 @@ public class UserInterface {
     else return "K";
   }
 
+  private static String[] hitCall(Blackjack game, String[] pcards) {
+    game.hit();
+    int[] cards = game.get_player_cards();
+    // the last card in the array is the newest
+    String c = format(cards[cards.length - 1]);
+    if(c == "10") {
+      String temp = pcards[0].substring(0, pcards[0].length() - 2);
+      pcards[0] = temp + "\t ____ \n";
+      
+      temp = pcards[1].substring(0, pcards[1].length() - 2);
+      pcards[1] = temp + "\t| " + c + " | \n";
+      
+      temp = pcards[2].substring(0, pcards[2].length() - 2);
+      pcards[2] = temp + "\t|____| \n";
+    }
+    else {
+      String temp = pcards[0].substring(0, pcards[0].length() - 2);
+      pcards[0] = temp + "\t ___ \n";
+      
+      temp = pcards[1].substring(0, pcards[1].length() - 3);
+      pcards[1] = temp + "|\t| " + c + " | \n";
+      
+      temp = pcards[2].substring(0, pcards[2].length() - 2);
+      pcards[2] = temp + "\t|___| \n";
+    }
+    return pcards;
+  }
+
   public static void main(String[] args) {
-    //call blackjack to get first four cards, first is player, second is dealer down
-    // third is player, fourth is face up dealer
+    String[] pCardsFormatted = new String[3];
+    String[] dCardsFormatted = new String[3];
     Scanner sc = new Scanner(System.in);
     System.out.print("*******************************\n");
     System.out.print("     Welcome to BlackJack!\n");
@@ -122,38 +150,120 @@ public class UserInterface {
     System.out.print("How much would you like to gamble with?\n");
     sum = getVal(sc);
     System.out.print("Great! ");
+    System.out.format("You have %d in your account!\n", sum);
     while(sum > 0){
-      System.out.format("You have %d in your account!\n", sum);
       System.out.print("How much would you like to bet? (Or type \"quit\" to cash out!)\n");
       bet = getBet(sc);
       if(bet == -1) {
-        System.out.format("Thanks for playing! Your total is %d \n", sum);
+        System.out.format("Thanks for playing! Your total is %d. \n", sum);
         break;
       }
       System.out.format("Great! You have bet %d for this game, let's play!\n", bet);
-      String p1, p2, d2;
+      String p1, p2, d1;
       Blackjack game = new Blackjack();
-      int[] starters = new int[3];
-      starters = game.getStarters();
-      p1 = format(starters[0]);
-      d2 = format(starters[2]);
-      p2 = format(starters[1]);
+      int player_card_num = game.get_num_player();
+      int dealer_card_num = game.get_num_dealer();
+      int[] player_cards = new int[player_card_num];
+      int[] dealer_cards = new int[dealer_card_num];
+      player_cards = game.get_player_cards();
+      dealer_cards = game.get_dealer_cards();
+
+      p1 = format(player_cards[0]);
+      d1 = format(dealer_cards[0]);
+      p2 = format(player_cards[1]);
+
       System.out.print("Dealer's Cards: \n");
-      System.out.print(formatCards(d2, "?"));
+      dCardsFormatted = formatCards(d1, "?");
+      StringBuilder str = new StringBuilder();
+      for (int i = 0; i < 3; i++) {
+        str.append(dCardsFormatted[i]);
+      }
+      System.out.print(str.toString());
       System.out.print("\n\n");
       System.out.print("Your Cards: \n");
-      System.out.print(formatCards(p1, p2));
+      pCardsFormatted = formatCards(p1, p2);
+      str = new StringBuilder();
+      for (int i = 0; i < 3; i++) {
+        str.append(pCardsFormatted[i]);
+      }
+      System.out.print(str.toString());
+      System.out.print("\n\n");
+    
       // some while thingy here
+      while (true) {
       if(game.blackjackCheck()) { 
         sum += bet;
-        System.out.format("Blackjack! You now have %d", sum);
+        System.out.format("Blackjack! You now have %d! \n\n", sum);
+        break;
       }
       else {
        if(sum >= (2*bet)) System.out.print ("Would you like to hit, stand, or double?\n");
         else System.out.print ("Would you like to hit or stand?\n");
         String command = parseCommand(sc);
         // add hit in interface to handle if the player busts!
-        if(command.equals("hit")) game.hit();
+        if(command.equals("hit")) {
+          pCardsFormatted = hitCall(game, pCardsFormatted);
+          if(game.blackjackCheck()) {
+            System.out.print("Dealer's Cards: \n");
+            str = new StringBuilder();
+            // show the upside down dealer card
+            dCardsFormatted = formatCards(d1, format(dealer_cards[1]));
+            for (int i = 0; i < 3; i++) {
+              str.append(dCardsFormatted[i]);
+            }
+            System.out.print(str.toString());
+            System.out.print("\n\n");
+            // show the player cards including the hit
+            System.out.print("Your Cards: \n");
+            str = new StringBuilder();
+            for (int i = 0; i < 3; i++) {
+              str.append(pCardsFormatted[i]);
+            }
+            System.out.print(str.toString());
+            System.out.print("\n\n");
+            sum = sum + bet;
+            System.out.format("Blackjack! You now have %d! \n\n", sum);
+            break;
+          }
+          else if(game.playerSum() > 21) {
+            System.out.print("Dealer's Cards: \n");
+            str = new StringBuilder();
+            // show the upside down dealer card
+            dCardsFormatted = formatCards(d1, format(dealer_cards[1]));
+            for (int i = 0; i < 3; i++) {
+              str.append(dCardsFormatted[i]);
+            }
+            System.out.print(str.toString());
+            System.out.print("\n\n");
+            // show all the player cards including the hit
+            System.out.print("Your Cards: \n");
+            str = new StringBuilder();
+            for (int i = 0; i < 3; i++) {
+              str.append(pCardsFormatted[i]);
+            }
+            System.out.print(str.toString());
+            System.out.print("\n\n");
+            sum = sum - bet;
+            System.out.format("Busted! You now have %d! \n\n", sum);
+            break;
+        }
+          else {
+          System.out.print("Dealer's Cards: \n");
+          str = new StringBuilder();
+          for (int i = 0; i < 3; i++) {
+            str.append(dCardsFormatted[i]);
+          }
+          System.out.print(str.toString());
+          System.out.print("\n\n");
+          System.out.print("Your Cards: \n");
+          str = new StringBuilder();
+          for (int i = 0; i < 3; i++) {
+            str.append(pCardsFormatted[i]);
+          }
+          System.out.print(str.toString());
+          System.out.print("\n\n");
+        }
+      }
         // in stand and double check for pushes and dealer busts
         // also make a stand in interface that prints all of the cards and the result
         //else if(command.equals("stand")) game.stand();
@@ -161,5 +271,6 @@ public class UserInterface {
         //else game.double();
       }
     }
+  }
   }
 }
