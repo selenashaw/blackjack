@@ -31,7 +31,7 @@ public class Blackjack {
     numDealerCards = 2;
   }
 
-  public int drawCard() {
+  private int drawCard() {
     int outputCard = -1;
     int cardindex = (int) (Math.random() * 52);
     if (Deck[cardindex] == -1) drawCard();
@@ -80,11 +80,33 @@ public class Blackjack {
     PlayerCards[index] = drawCard();
   }
 
-  public void stand() {
-    int pSum = playerSum();
-    // here we want dealer to beat the player.
-    // dealer stops hitting when they reach hard 17
+  private void dealerHit() {
+    int index = -1;
+    for(int i = 2; i < max_possible_cards; i++) {
+      if(DealerCards[i] == 0) {
+        index = i; 
+        break;
+      }
+    }
+    numDealerCards++;
+    DealerCards[index] = drawCard();
+  }
 
+  // returns 1 if player wins -1 if dealer wins, 2 if dealer busts, 0 if push
+  public int stand() {
+    int pSum = playerSum();
+    if (dealerSum() > 21) return 2;
+    else if (pSum < dealerSum()) return -1;
+    else {
+      while (true) {
+        if(dealerSum() < 17) dealerHit();
+        else break;
+      }
+      if (dealerSum() < pSum) return 1;
+      else if (dealerSum() > 21) return 2;
+      else if (dealerSum() == pSum) return 0;
+      else return -1;
+    }
   }
 
   public int ace_adder(int ace_count, int sum) {
@@ -127,7 +149,7 @@ public class Blackjack {
     else return false;
   }
 
-  public void iterate() {
+  private void iterate() {
     int check = 0;
     for(int i: Deck) {
       System.out.println(i);
