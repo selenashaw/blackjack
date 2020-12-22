@@ -34,7 +34,9 @@ public class Blackjack {
   private int drawCard() {
     int outputCard = -1;
     int cardindex = (int) (Math.random() * 52);
-    if (Deck[cardindex] == -1) drawCard();
+    if (Deck[cardindex] == -1) {
+      outputCard = drawCard();
+    }
     else {
       outputCard = Deck[cardindex];
       Deck[cardindex] = -1;

@@ -1,7 +1,7 @@
 /* Userinterface for blackjack program */
-import java.sql.Time;
+//import java.sql.Time;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
+//import java.util.concurrent.TimeUnit;
 
 public class UserInterface {
 
@@ -280,12 +280,10 @@ public class UserInterface {
       }
       System.out.print(str.toString());
       System.out.print("\n\n");
-    
-      // TODO: figure out the controls for when doubling is allowed and when it isnt
-      // I didnt bust with 8 K K...
-      // also had j k 4 4 in dealer cards when I had 10 and K.
+
+     int doublecheck = 0;
+     int doublecheck1 = 0;
       while (true) {
-        int doublecheck = 0;
       if(game.blackjackCheck()) { 
         sum += bet;
         System.out.format("Blackjack! You now have %d! \n\n", sum);
@@ -297,7 +295,10 @@ public class UserInterface {
           System.out.print ("Would you like to hit, stand, or double?\n");
           doublecheck++;
         }
-        else System.out.print ("Would you like to hit or stand?\n");
+        else {
+          System.out.print ("Would you like to hit or stand?\n");
+          doublecheck1++;
+        }
       } 
        else System.out.print ("Would you like to hit or stand?\n");
         String command = parseCommand(sc);
@@ -351,13 +352,13 @@ public class UserInterface {
       }
       // if player doubles
       else {
-        if(doublecheck == 0) {
+        if(doublecheck1 == 1) {
           // player hits once then we basically call stand.
           System.out.print("Sorry, you can't double here!\n");
         }
+        // add blackjack check for player
         else {
           bet = bet*2;
-          System.out.print("doubling yayay\n");
           // hit to get the one additional card
           pCardsFormatted = hitCall(game, pCardsFormatted);
           if(game.playerSum() > 21) {
@@ -397,11 +398,18 @@ public class UserInterface {
           }
           System.out.print(str.toString());
           System.out.print("\n\n");
+          if(game.blackjackCheck()) { 
+            sum += bet;
+            System.out.format("Blackjack! You now have %d! \n\n", sum);
+            break;
+          }
+          else { 
           wait(2000);
           // now dealer hits until game ends
           int winner = game.stand();
           standCall(winner, pCardsFormatted, dCardsFormatted, game);
           break;
+          }
         }
         }
       }
