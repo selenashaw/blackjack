@@ -4,46 +4,61 @@ public class Blackjack {
 
   private final int[] Deck;
   private final int max_possible_cards;
+  private Queue queueDeck;
   private int[] DealerCards;
   private int[] PlayerCards;
   private int numPlayerCards;
   private int numDealerCards;
+  private int cardsDrawn = 0;
 
   /* The constructor initializes all the global variables and draws the first
    * two cards for the player and for the dealer */
   public Blackjack() {
     Deck = new int[52];
+   
     max_possible_cards = 12;
     DealerCards = new int[max_possible_cards];
     PlayerCards = new int[max_possible_cards];
     for (int i = 0; i < 52; i++) {
       Deck[i] = 1 + (i % 13);
     }
+    queueDeck = new Queue(Deck);
+  }
+
+  // deals the player and dealers first set of cards
+  public void dealCards() {
     for (int i = 0; i < max_possible_cards; i++) {
       DealerCards[i] = 0;
       PlayerCards[i] = 0;
     }
+
     PlayerCards[0] = drawCard();
     DealerCards[0] = drawCard();
     PlayerCards[1] = drawCard();
     DealerCards[1] = drawCard();
 
+    cardsDrawn += 4;
     numPlayerCards = 2;
     numDealerCards = 2;
+  }
+
+  // used to check if the number of cards drawn is greater than half.
+  public int numCardsDrawn() {
+    return cardsDrawn;
+  }
+
+  // shuffles the deck
+  public Queue shuffle() {
+    Queue newQueue = new Queue(Deck);
+    cardsDrawn = 0;
+    return newQueue;
   }
 
   /* drawCard is used to access the deck array and randomly chooses an index,
    * if the card at that index hasn't been used it returns that card and sets
    * that location to -1, if it has been used it runs again */
   private int drawCard() {
-    int outputCard = -1;
-    int cardindex = (int) (Math.random() * 52);
-    if (Deck[cardindex] == -1) {
-      outputCard = drawCard();
-    } else {
-      outputCard = Deck[cardindex];
-      Deck[cardindex] = -1;
-    }
+    int outputCard = queueDeck.pop();
     return outputCard;
   }
 
@@ -90,6 +105,7 @@ public class Blackjack {
       }
     }
     numPlayerCards++;
+    cardsDrawn++;
     PlayerCards[index] = drawCard();
   }
 
@@ -103,6 +119,7 @@ public class Blackjack {
       }
     }
     numDealerCards++;
+    cardsDrawn++;
     DealerCards[index] = drawCard();
   }
 

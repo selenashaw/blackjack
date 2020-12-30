@@ -276,7 +276,14 @@ public class UserInterface {
     sum = getVal(sc);
     System.out.print("Great! ");
     System.out.format("You have %d in your account!\n", sum);
+    Blackjack game = new Blackjack();
     while (sum > 0) {
+      // if the dealer has gone through half of the deck, shuffle.
+      if (game.numCardsDrawn() > 26) {
+        game.shuffle();
+        System.out.print("The dealer is shuffling. \n\n");
+        wait(1000);
+      }
       System.out.print("How much would you like to bet? (Or type \"quit\" to cash out!)\n");
       bet = getBet(sc);
       if (bet == -1) {
@@ -285,7 +292,7 @@ public class UserInterface {
       }
       System.out.format("Great! You have bet %d for this game, let's play!\n", bet);
       String p1, p2, d1;
-      Blackjack game = new Blackjack();
+      game.dealCards();
       int player_card_num = game.get_num_player();
       int dealer_card_num = game.get_num_dealer();
       int[] player_cards = new int[player_card_num];
