@@ -48,23 +48,46 @@ public class Queue {
     }
   }
 
-  /* pop returns the next card on the deck, and puts that card on the bottom*/
+  /* pop returns the next card on the deck */
   public int pop() {
     Node popped = head;
     int temp = popped.card;
     head = popped.next;
-    popped.next = null;
-    tail.next = popped;
-    tail = popped;
     return temp;
+  }
+
+  /* push takes an array of cards and puts them to the bottom of the deck*/
+  public void push(int[] cards) {
+    for (int i = 0; i < cards.length; i++) {
+      if(cards[i] == 0) break;
+      Node insert = new Node();
+      insert.card = cards[i];
+      insert.next = null;
+      tail.next = insert;
+      tail = insert;
+    }
+  }
+
+  /* iterates through the entire queue and returns everything it holds as an array*/
+  private void iter() {
+    Node curr = new Node();
+    curr = head;
+    while (curr != null) {
+      System.out.print(curr.card + " ");
+      curr = curr.next;
+    }
   }
 
   /* Main function is for testing to make sure the queue randomizes the cards*/
   public static void main(String[] args) {
     int[] test = {1,2,3,4,5,6,7,8,9,10};
     Queue testing = new Queue(test);
-    for (int i = 0; i < test.length; i++) {
-      System.out.println(testing.pop());
-    }
+    int[] pulled = new int[3];
+    pulled[0] = testing.pop();
+    pulled[1] = testing.pop();
+    pulled[0] = testing.pop();
+    System.out.println("pulled " + pulled[0] + " " + pulled[1] + " " + pulled[2]);
+    testing.push(pulled);
+    testing.iter();
   }
 }

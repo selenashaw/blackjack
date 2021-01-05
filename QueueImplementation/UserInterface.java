@@ -327,6 +327,7 @@ public class UserInterface {
         if (game.blackjackCheck()) {
           sum += bet;
           System.out.format("Blackjack! You now have %d! \n\n", sum);
+          game.returnToDealer();
           break;
         } else {
           if (sum >= (2 * bet)) {
@@ -363,6 +364,7 @@ public class UserInterface {
               System.out.print("\n\n");
               sum = sum - bet;
               System.out.format("Bust! You now have %d! \n\n", sum);
+              game.returnToDealer();
               break;
             } else {
               System.out.print("Dealer's Cards: \n");
@@ -384,6 +386,7 @@ public class UserInterface {
           // if player stands
           else if (command.equals("stand")) {
             standCall(pCardsFormatted, dCardsFormatted, game);
+            game.returnToDealer();
             break;
           }
           // if player doubles
@@ -417,6 +420,7 @@ public class UserInterface {
                 System.out.print("\n\n");
                 sum = sum - bet;
                 System.out.format("Bust! You now have %d! \n\n", sum);
+                game.returnToDealer();
                 break;
               } else {
                 System.out.print("Dealer's Cards: \n");
@@ -436,11 +440,13 @@ public class UserInterface {
                 if (game.blackjackCheck()) {
                   sum += bet;
                   System.out.format("Blackjack! You now have %d! \n\n", sum);
+                  game.returnToDealer();
                   break;
                 } else {
                   wait(2000);
                   // now dealer hits until game ends
                   standCall(pCardsFormatted, dCardsFormatted, game);
+                  game.returnToDealer();
                   break;
                 }
               }

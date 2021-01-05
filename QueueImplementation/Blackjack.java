@@ -211,6 +211,12 @@ public class Blackjack {
       return false;
   }
 
+  /* pushes the player and dealers hand to the back of the queue*/
+  public void returnToDealer() {
+    queueDeck.push(DealerCards);
+    queueDeck.push(PlayerCards);
+  }
+
   /* iterate is used for testing to see what the deck is set to */
   private void iterate() {
     int check = 0;
